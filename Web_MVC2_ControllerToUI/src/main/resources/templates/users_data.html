@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html  xmlns:th="https://www.thymeleaf.org"  lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WEB MVC USERS</title>
+</head>
+<body>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user:${users}">
+    <td th:text="${user.uid}"></td>
+    <td th:text="${user.uname}"></td>
+    <td th:text="${user.mail}"></td>
+    </tr>
+    </tbody>
+
+</table>
+</body>
+</html>

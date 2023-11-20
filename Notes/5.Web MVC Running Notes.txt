@@ -1,0 +1,1042 @@
+=======================================
+33-SBMS (Spring Boot & Microservices)
+=======================================
+
+1) Spring Core ------- Completed
+2) Spring Boot  ------- Completed
+3) Spring Data JPA ----- Completed
+
+4) Spring Web MVC
+5) RESTFul Services
+6) Microservices
+7) Spring Batch
+8) Spring Security(Http Basic Auth, OAuth, JWT)
+9) Tools (Kafka, Redis, Postman, Swagger etc..)
+
+===============
+Spring Web Mvc
+===============
+
+=> Spring Web MVC module is used to develop both Web & Distributed applications
+
+=> Web Application : C 2 B Communication
+
+	Ex: gmail, linkedin, naukri, flipkart etc...
+
+=> Distributed Application : B 2 B Communication
+
+	Ex: 
+
+		Make My Trip <---------> IRCTC
+
+		Passport <---------> AADHAR
+
+		Gpay/Phone Pay <--------> Bank App
+
+
+==========================
+Spring Web MVC Advantages
+==========================
+
+1) Front Controller (Pre-Processing & Post Processing)
+
+2) Form Binding (java obj <----> Form fields)
+
+3) Flexibility in Form Binding (DataType Conversion)
+
+		String phno = request.getParameter("phno");
+		Long ph = Long.parseLong(phno);
+
+4) Supports Multiple View Technologies 
+
+	Ex: JSP, Thymeleaf
+
+5) Embedded Servers
+
+	Ex: Tomcat, Jetty, Netty
+
+=============================
+Spring Web MVC Architecture
+=============================
+
+=> DispatcherServlet
+
+=> HandlerMapper
+
+=> Controller
+
+=> ModelAndView
+
+=> ViewResolver
+
+=> View
+
+
+=> DispatcherServlet is called as Spring Framework servlet. It is responsible to perform pre-processing and post-processing of a request. It is also called as Front Controller.
+
+	Pre-processing : Before Controller method execution
+
+	Post-processing : After controller method execution
+
+=> HandlerMapper is used to identify Request Handler (Controller). Which controller class method should proecss the request.
+
+=> Controller is called as Request Handler. Controller class will have methods to handle incoming requests. Controller will return ModelAndView object to Dispatcher Servlet.
+
+=> ModelAndView : Model represents data in key-value pair. View represents view file name.
+
+
+=> ViewResolver is used to identify where the view files are available.
+
+=> View : It is used to render model data in the view file
+
+
+================================================
+Creating First Spring Web MVC based application
+================================================
+
+=> Create Spring Starter Project with below dependencies
+
+	a) web-starter
+	b) devtools
+	c) thymeleaf-starter
+
+=> Create Controller class using @Controller annotation
+
+=> Write the controller methods to handle request and return MAV
+
+=> Create Thymeleaf template for presentation logic 
+	(Location : src/main/resources/templates)
+
+=> Run the application and test it.
+
+
+
+------------------------MsgController.java-------------------
+@Controller
+public class MsgController {
+
+	public MsgController() {
+		System.out.println("MsgController:: Constructor Called....");
+	}
+
+	@GetMapping("/greet")
+	public ModelAndView getGreetMsg() {
+
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("msg", "All the best..!!");
+		mav.setViewName("index");
+
+		return mav;
+	}
+
+	@GetMapping("/welcome")
+	public ModelAndView getWelcomeMsg() {
+
+		ModelAndView mav = new ModelAndView();
+
+		// setting data in key-value format to access in view page
+		mav.addObject("msg", "Welcome to Ashok IT....!!");
+
+		// return view file name
+		mav.setViewName("index");
+
+		return mav;
+	}
+}
+------------------index.html-------------------
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+	<title>Ashok IT</title>
+</head>
+
+<body>
+
+	<p th:text="${msg}"></p>
+
+</body>
+
+</html>
+---------------BookController.java-----------------
+@Controller
+public class BookController {
+
+	public BookController() {
+		System.out.println("BookController :: Constructor");
+	}
+	
+	@GetMapping("/book")
+	public ModelAndView getBookData() {
+		
+		ModelAndView mav = new ModelAndView();
+		
+		mav.addObject("id", 101);
+		mav.addObject("name", "Java");
+		mav.addObject("price", 450.00);
+		
+		mav.setViewName("book-data");
+		
+		return mav;
+	}
+}
+--------------------book-data.html----------------
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+	<title>Ashok IT Book Store</title>
+</head>
+
+<body>
+	<p th:text="${id}"></p>
+	<p th:text="${name}"></p>
+	<p th:text="${price}"></p>
+</body>
+
+</html>
+
+
+=========================================
+How to send Data from Controller to UI
+========================================
+
+=> We can send data from Controller to UI in 2 ways
+
+a) ModelAndView 
+b) Model
+
+
+=> ModelAndView is a predefined class which provided several methods to send data from Controller to UI 
+
+	@GetMapping("/user")
+	public ModelAndView getUserName() {
+		ModelAndView mav = new ModelAndView();
+
+		// set data to model
+		mav.addObject("data", "Ashok");
+
+		// set view name
+		mav.setViewName("index");
+
+		return mav;
+	}
+
+=> Model is a interface which provided methods to send data from Controller to UI. Model is a Map which represents data in key-value format.
+
+	@GetMapping("/email")
+	public String getUserEmail(Model model) {
+		
+		model.addAttribute("data", "ashokitschool@gmail.com");
+		
+		return "index";
+	}
+
+Note: When we send request to above method, DispatcherServlet will instantiate Model impl class and it will pass as parameter for method. For every request new model object will be created.
+
+
+=> We can access ModelAndView / Model objects data in View Page like below
+
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+	<title>Ashok IT - Web MVC</title>
+</head>
+
+<body>
+	<p th:text="${data}"></p>
+</body>
+</html>
+
+===============================
+Sending Object Data to UI Page
+===============================
+
+public class User {
+
+	private Integer id;
+	private String name;
+	private String email;
+
+	// constructors
+
+	// setters & getters
+
+}
+
+	@GetMapping("/user")
+	public String getUserData(Model model) {
+
+		User userObj = new User(101, "Ashok", "ashokitschool@gmail.com");
+
+		model.addAttribute("user", userObj);
+
+		return "user-data";
+	}
+
+	@GetMapping("/users")
+	public String getUsers(Model model) {
+
+		User u1 = new User(101, "Ashok", "ashok@gmail.com");
+		User u2 = new User(102, "Raju", "raju@gmail.com");
+		User u3 = new User(103, "Rani", "rani@gmail.com");
+
+		List<User> usersList = Arrays.asList(u1, u2, u3);
+
+		model.addAttribute("usersData", usersList);
+
+		return "view-users";
+	}
+
+====================================
+Accessing Object data in view page
+===================================
+
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+	<title>Ashok IT - Web MVC</title>
+
+</head>
+
+<body>
+
+	User Id : <p th:text="${user.id}"></p>
+	
+	User Name : <p th:text="${user.name}"></p>
+	
+	User Email : <p th:text="${user.email}"></p>
+
+</body>
+
+</html>
+
+=============================
+Iterating List in View Page
+=============================
+
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Ashok IT - SBMS</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+
+<body>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+		crossorigin="anonymous"></script>
+
+	<table class="table table-bordered table-striped table-hover">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr th:each="user: ${usersData}">
+				<td th:text="${user.id}" />
+				<td th:text="${user.name}" />
+				<td th:text="${user.email}" />
+			</tr>
+		</tbody>
+	</table>
+</body>
+
+</html>
+
+========================================
+How to send Data To Controller from UI
+========================================
+
+=> We can send data to Controller from UI in 2 ways
+
+a) Using URL (Query Params & Path Params)
+b) Using Request Body
+
+=> If we want to send any non-sensitive text based info then we can send it in URL as Query Paramters.
+
+=> If we want to send any sensitive/secret information then we can send it using Request Body (Forms).
+
+=================
+Query Parameters
+=================
+
+=> Using Query Params we can send data to server in the URL
+
+=> Query Parameters Represents data in key-value format like below
+
+		Ex-1 : www.ashokit.in?course=sbms&trainer=ashok
+
+		Ex-2 : https://www.youtube.com/watch?v=hV1OWzYpzxo&t=5s
+
+=> Query Params starts with ? and seperated by &
+
+=> Query Params will present only at end of the URL
+
+=> Query Parameters also called as Request parameters
+
+=> To read query parameters from URL we will use @RequestParam annotation
+
+
+
+	@GetMapping("/enquiry")
+	public String getInfo(@RequestParam("course") String course, 
+						 @RequestParam("trainer")String trainer, 
+						 Model model) {
+		
+		System.out.println("Course :: "+ course);
+		System.out.println("Trainer :: "+ trainer);
+
+		model.addAttribute("msg", "Contact : + 91-9985396677");
+		
+		return "index";
+	}
+
+
+	URL : http://localhost:8080/enquiry?course=sbms&trainer=ashok
+
+
+Note: Query Parameters will expose data in URL hence we shouldn't use this approach to send confidential data like passwords, secret codes, pin numbers etc...
+
+================
+Path Parameters
+================
+
+=> Path Parameters are also used to send to data to server in URL
+
+=> Path Parameters will represent value directley without any key
+
+	Ex:  www.ashokit.in/course/{sbms}
+
+=> Path Parameters will start with '/' and seperated by '/'
+
+=> Path Parameters can present anywhere in the URL
+
+	Ex: www.ashokit.in/course/{sbms}/info
+
+=> Path Parameters also called as URI Variables
+
+Note: We need to reprsent path parameters postion in URL pattern
+
+=> To read path parameters from URL we will use @PathVariable annotation
+
+	@GetMapping("/course/{cname}/info")
+	public String getCourseInfo(@PathVariable("cname") String cname, Model model) {
+
+		String msgTxt = cname + " New Batch Starts Next Week..!!";
+
+		model.addAttribute("msg", msgTxt);
+
+		return "index";
+	}
+
+	URL : http://localhost:8080/course/JRTP/info
+
+Note: Path Parameters will expose data in URL hence we shouldn't use this approach to send confidential data like passwords, secret codes, pin numbers etc...
+
+
+==========================
+Form Based Applications
+==========================
+
+=> Forms are very common in every web application
+
+	Ex: login-form, reg-form, search-form etc...
+
+=> Forms are used to collect the data from user and send to server
+
+=> Form data we can send to server securely using Request Body (It won't disply in URL)
+
+=> In Spring Web MVC we have form binding technique to capture form data into object and populate object data into form.
+
+public class User {
+
+	private String name;
+	private String email;
+	private Long phno;
+}
+====================
+package in.ashokit.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import in.ashokit.binding.User;
+
+@Controller
+public class UserController {
+
+	/**
+	 * To load empty form
+	 * 
+	 * @param model
+	 * @return String
+	 */
+
+	@GetMapping("/")
+	public String loadForm(Model model) {
+
+		model.addAttribute("user", new User());
+
+		return "index";
+	}
+
+	/**
+	 * To handle form submission
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/user")
+	public String handleSubmitBtn(User user, Model model) {
+
+		System.out.println(user);
+		
+		//TODO: Store form data into database
+		
+		model.addAttribute("msg", "User Data Saved successfully...!!");
+
+		return "success";
+	}
+
+}
+
+============================
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+	<title>Ashok IT - Web MVC</title>
+
+</head>
+
+<body>
+		
+	<h3>User Form</h3>
+
+	<form th:action="@{/user}" th:object="${user}" method="POST">
+
+		<table>
+			<tr>
+				<td>Name:</td>
+				<td><input type="text" th:field="*{name}" /></td>
+			</tr>
+			<tr>
+				<td>Email:</td>
+				<td><input type="text" th:field="*{email}" /></td>
+			</tr>
+			<tr>
+				<td>Phno:</td>
+				<td><input type="number" th:field="*{phno}" /></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="Submit" /></td>
+			</tr>
+
+		</table>
+
+	</form>
+	
+		<a href="#">View Users</a>
+
+</body>
+
+</html>
+
+
+===============================
+Working with Embedded Database
+===============================
+
+=> Embedded Databases are called as Temporary databases
+
+	Ex: h2 database
+
+=> H2 database will start along with our application.
+
+=> If application is running then database will run, if application is stopped then database also will be stopped.
+
+Note: Embedded databases are used for POC purpose.
+
+		POC : Proof of concept
+
+Note: We shouldn't use Embedded databases for real-project development because when application re-starts then database also will re-start (data loss).
+
+=> To work with h2 database in spring boot app we will use below dependency
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+
+=> We can configure H2 Datasource properties like below
+
+spring.datasource.url=jdbc:h2:mem:appdb
+spring.datasource.username=ashokit
+spring.datasource.password=ashokit
+spring.datasource.driver=org.h2.Driver
+
+
+=> To see embedded database we can use below url
+
+		URL : http://localhost:8080/h2-console
+
+==================
+Form Validations
+==================
+
+=> From validations are used to verify user is entering correct info or not
+
+=> Form validations we can implement in 2 ways
+
+		a) Client side validation (before request sending request to server)
+		b) Server side validation (after sending request to server)
+
+=> To perform client side validations we can use 'required' attribute
+
+		Ex: <input type="text" th:field="*{name}" requied />
+
+=> To perform server side validations we have 'spring-boot-starter-validation' dependency
+
+=> We can use below annotations to perform validations
+
+
+========================= Form Binding class ============================
+
+@NotEmpty
+@Email
+@NotNull
+@Size
+
+public class User {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer userId;
+
+	@NotEmpty(message = "Name is mandatory")
+	@Size(min=3, max=6,message="Min 3 and Max 8 characters allowed")
+	private String name;
+
+	@NotEmpty(message = "Email is mandatory")
+	@Email(message="Enter valid email")
+	private String email;
+
+	@NotNull(message = "Phno is mandatory")
+	private Long phno;
+
+	//setters & getters
+
+}
+
+=============================Controller Method ==========================================
+
+	@PostMapping("/user")
+	public String handleSubmitBtn(@Valid User user, BindingResult result, Model model) {
+
+		System.out.println(user);
+		
+		if(result.hasErrors()) {
+			return "index";
+		}
+		
+		boolean saveUser = service.saveUser(user);
+		
+		if(saveUser) {
+			model.addAttribute("msg", "User Data Saved successfully...!!");
+		}
+		
+		return "index";
+	}
+
+=========================Presentation file ==================================================
+
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bootstrap demo</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+
+<body>
+
+	<div class="container mt-5">
+
+		<h3>User Form</h3>
+
+		<p th:text="${msg}" style="color:green;"></p>
+
+		<form th:action="@{/user}" th:object="${user}" method="POST">
+
+			<table>
+				<tr>
+					<td>Name:</td>
+					<td><input type="text" th:field="*{name}" /></td>
+					<td th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"> </td>
+				</tr>
+				<tr>
+					<td>Email:</td>
+					<td><input type="text" th:field="*{email}" /></td>
+					<td th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"> </td>
+				</tr>
+				<tr>
+					<td>Phno:</td>
+					<td><input type="number" th:field="*{phno}" /></td>
+					<td th:if="${#fields.hasErrors('phno')}" th:errors="*{phno}" class="text-danger"> </td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" value="Submit" class="btn btn-primary" /></td>
+				</tr>
+
+			</table>
+
+		</form>
+
+		<a href="users">View Users</a>
+
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
+=======================================================================================
+
+1) How to handle double posting (duplicate form submissions)
+
+2) Implementing 'Edit' & 'Delete' functionalities
+
+=====================================
+Exception Handling in Spring Web MVC
+=====================================
+
+=> Exception means unexpected and unwanted situation which distrubs normal flow of execution
+
+=> When exception occurs our program will be terminated abnormally
+
+=> As a developer we need to handle exception for graceful termination
+
+=> To handle exceptions in java, we have below keywords
+
+a) try
+b) catch
+c) finally
+d) throw
+e) throws
+
+=> When exception occurs in controller method then it will display exception stack trace in browser but end users can't understand that.
+
+=> To display a menaningful message we can create error.html file in src/main/resources/templates. When exception occured then error.html page will be loaded by our application in browser.
+
+=> In Spring Web MVC, we can handle exceptions in 2 ways
+
+a) Local Exception Handling  (controller specific)
+
+b) Global Exception Handling (Application specific)
+
+
+=> To implement Exception handling we will use below 2 annotations
+
+	a) @ControllerAdvice
+	b) @ExceptionHandler
+
+
+============================ Global Exception Handler Class ======================
+@ControllerAdvice
+public class AppExceptionHandler {
+	
+	@ExceptionHandler(value = NullPointerException.class)
+	public String handleNpe(NullPointerException ex, Model model) {
+
+		System.out.println("first - method executed....");
+
+		model.addAttribute("exRsn", ex.getMessage());
+		model.addAttribute("date", LocalDateTime.now());
+
+		return "error";
+	}
+
+	@ExceptionHandler(value = Exception.class)
+	public String handleEx(Exception ex, Model model) {
+
+		System.out.println("second method executed....");
+
+		model.addAttribute("exRsn", ex.getMessage());
+		model.addAttribute("date", LocalDateTime.now());
+
+		return "error";
+	}
+}
+
+===========================================================
+How to change default embedded container in spring boot ?
+===========================================================
+
+=> In Spring Boot we have 3 embedded servers
+
+	a) Tomcat
+	b) Jetty
+	c) Netty
+
+=> These embedded servers are used to run our boot web applications
+
+=>  When we add web-starter in pom.xml then apache tomcat is the default embedded container for our application.
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+=> We can remove tomcat and we can jetty as embedded container by making below changes in pom.xml file
+
+		a) Exclude tomcat-starter from web-starter
+		b) Add jetty dependencies
+
+===========================================pom.xml===================================
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jetty</artifactId>
+		</dependency>
+
+============================================================================================
+
+Hi,
+
+Today we discussed below topics
+
+1) Exception Handling in Spring Boot
+2) How to make jetty as embedded server
+
+🔥 *Assignment for Today(03-Sep)* 🔥
+
+1) Deploy Spring Boot Web app in external server (Ex : Tomcat, JBoss...)
+
+2) Develop Login, Registration & Logout Application using 
+	(Spring Boot + Data JPA + Web MVC + Thymeleaf + Bootstrap + H2 DB)
+
+Thanks,
+Ashok.
+
+=================================
+What is @ResponseBody annotation ?
+=================================
+
+=> This is annotation is used to send direct response to client
+
+
+	@ResponseBody
+	@GetMapping("/greet")
+	public String getGreetMsg() {
+		return "Good Morning..!!";
+	}
+
+=> We can use this annotation at class level and method level
+
+	@RestController = @Controller + @ResponseBody
+
+
+===============================================
+What is Context-Path in spring web mvc ?
+===============================================
+
+=> It is the name to represent our application
+
+=> In Spring Boot embedded container context-path is optional
+
+=> To configure context-path we can use below property in application.properties file
+
+			server.servlet.context-path=/ashokit
+
+Note: After adding context-path, we have to use it in URL to access our application controller methods
+
+	Ex: http://localhost:8080/ashokit/welcome
+
+================================================
+Spring Boot web app with JSP as View Technology
+================================================
+
+=> JSP stands for Java server pages
+
+=> JSP is used to develop presentation logic in Java web applications
+
+Note: Internally JSP will be translated to Servlet for execution
+
+=> Performance wise JSP is slow
+
+Note: JSP Is outdated in the market. People are not using now a days.
+
+
+Step-1 : Create Spring Boot Web application with below dependencies
+
+		a) web-starter
+		b) dev-tools
+		c) tomcat-embed-jasper (need to add manually)
+
+  Note: Make sure project packaging type as 'war'
+
+Step-2 : Create Controller class with required methods
+
+Step-3 : Create View Page using JSP as presentation logic (index.jsp)
+
+		location : src/main/webapp/views
+
+Step-4 : Configure View Resolver in application.properties file
+
+		spring.mvc.view.prefix=/views/
+		spring.mvc.view.suffix=.jsp
+
+Step-5 : Run the application and test it
+
+
+==============
+HttpSession
+=============
+
+=> In web application for every user one session object will be created
+
+=> Session object is used to store logged in user data in key-value format
+
+=> When user logged in successfully then we have to create session object for the user and when user logged out from application then we have to invalidate the session.
+
+
+			session.setAttribute(Key, Value);
+
+			session.getAttribute(Key);
+
+			session.invalidate( );
+
+
+=> We can get session obj using HttpServletRequest like below
+
+	@GetMapping("/login")
+	public String login(HttpServletRequest req, Model model) {
+
+		String name = req.getParameter("name");
+
+		HttpSession session = req.getSession();
+		session.setAttribute("name", name);
+
+		model.addAttribute("msg", "User logged in (session created)");
+
+		return "index";
+	}
+
+	@GetMapping("/dashboard")
+	public String dashboard(HttpServletRequest req, Model model) {
+
+		HttpSession session = req.getSession();
+		String name = (String) session.getAttribute("name");
+
+		System.out.println("Name :: " + name);
+
+		model.addAttribute("msg", name + ", welcome to our website...");
+
+		return "index";
+	}
+
+	@GetMapping("/logout")
+	public String logout(HttpServletRequest req, Model model) {
+
+		HttpSession session = req.getSession();
+
+		session.invalidate();
+
+		model.addAttribute("msg", "User logged out successfully");
+
+		return "index";
+	}
+
+
+
+===============================
+Topics Covered in Web MVC
+===============================
+1) What is Spring Web MVC 
+2) Web MVC Advantages
+3) Spring Web MVC Architecture
+4) DispatcherServlet
+5) HandlerMapper
+6) Controller
+7) ModelAndView
+8) ViewResolver
+9) View
+10) How to send data from Controller to UI
+11) How to send data from UI to Controller
+12) Request Params (K-V) (@RequestParam)
+13) Path Variables (@PathVariable)
+14) Request Body (Form data)
+15) Form Based Application
+16) Form Binding Class
+17) Form Validations (client side & server side)
+18) Spring Boot Exception Handling
+19) @ControllerAdvice and @ExceptionHandler
+20) How to change embedded container to Jetty
+21) Embedded Database (h2)
+22) What is @ResponseBody 
+23) What is Context-Path
+24) What is Dev Tools ?
+25) How to handle duplicate form submissions (PRG pattern)
+26) Working with JSP as presentation technology
+27) Request Re-Direction in Controller Methods
+28) Configure Class Level URL Pattern
+29) Dealing with HttpSession
+
+
+
+
+🔥 *33-SBMS Batch Status* 🔥
+
+✅ Spring Basics (Completed)
+✅ Spring Core   (Completed)
+✅ Spring Boot   (Completed)
+✅ Spring Data JPA (Completed)
+✅ Spring Web MVC  (Completed)
+
+🛎 *We will start below topics from Monday(11-Sep)*
+
+👉 REST API
+👉 Spring Cloud
+👉 Microservices
+👉 Spring Security
+👉 Spring Batch
+👉 Tools(junit, kafka, redis etc..)
+
+Thanks,
+Ashok
+
+
+

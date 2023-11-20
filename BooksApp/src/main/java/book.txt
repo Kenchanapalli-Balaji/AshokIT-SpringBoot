@@ -1,0 +1,4 @@
+101,Java,500
+102,Python,400
+103,Hibernate,800
+104,Spring,1000

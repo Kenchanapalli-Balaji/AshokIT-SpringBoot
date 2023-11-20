@@ -1,0 +1,1043 @@
+
+==========================================
+RESTful Services (REST API Development)
+==========================================
+
+Fullstack = Frontend + Backend
+
+Frontend Technologies : Angular / React JS
+
+Backend Technologies : JAVA + Spring Boot + REST APIs + Microservices
+
+Note: In Backend several REST APIs will be developed with Microservices Architecture.
+
+=> Backend Services are called as Microservices/REST APIs.
+
+=> Every Microservice is independentley deployable and deliverable.
+
+=> Project maintenence will become easy when we develop using Microservices architecture.
+
+===================================
+What is Distributed Application ?
+===================================
+
+=> The application which is communicating with another application is called as Distributed application.
+
+=> Distributed applications are meant for B 2 B (Business to Business) communication.
+
+=> Distributed applications should be intereperable (platform independent & language independent)
+
+				
+			java app <------------> Dot net app
+
+			java app <------------> Python app
+
+			java app <------------> Angular app
+
+			java app <------------> React app
+
+
+=========================
+Distributed Technologies
+========================
+
+=> CORBA
+
+=> RMI
+
+=> EJB
+
+=> SOAP Webservices
+
+=> RESTFul Services (Trending)
+
+
+Note: Using RESTFul services we can develop Distributed Applications with Intereoperability.
+
+
+=======================
+REST API Architecture
+=======================
+
+=> In REST Architecure we can see 2 actors
+
+a) Provider 
+b) Consumer
+
+=> The application which is providing business services to other applications is called as Provider.
+
+=> The application which is accessing business services from other applications is called as Consumer.
+
+Note: In IRCTC and Make My Trip scenario 
+
+			IRCTC ----> Provider
+
+			MakeMyTrip ---> Consumer
+
+
+Note: Provider & Consumer will exchange data in JSON format.
+
+
+==================================
+How to develop REST APIs in Java
+==================================
+
+a) JAX-RS API
+b) Spring Web MVC (Trending)
+
+
+================
+HTTP Protocol
+================
+
+-> HTTP stands for Hyper Text Transfer Protocol
+
+-> It acts as mediator between client and server
+
+a) HTTP Methods
+b) HTTP Status Codes
+c) HTTP Request Structure
+d) HTTP Response Structure
+
+==============
+HTTP Methods
+==============
+
+-> We have several methods in HTTP Protocol
+
+	a) GET    : Getting Data
+
+	b) POST   : Creating resource/record
+	
+	c) PUT	  : Update Record (all fields in record)
+	
+	d) DELETE : Delete Record
+	
+	e) PATCH  : Update Record (few fileds)
+
+==================
+HTTP Status Codes
+=================
+
+=> Http status codes are used to represent how our server processed given request
+
+1XX (100-199) => Information
+
+2XX (200-299) => SUCCESS
+
+3xx (300-399) => Redirection
+
+4xx (400-499) => Client Error
+
+5xx (500-599) => Server Error
+
+
+========================
+HTTP Request Structure
+=======================
+
+=> Http Request Contains 4 parts
+
+a) Initial Request Line
+b) Request Headers
+c) Blank Line
+d) Request Body
+
+=========================
+Http Response Structure
+=========================
+
+=> Http Response contains 4 parts
+
+a) Intial Response line
+b) Response Headers
+c) Blank Line
+d) Response Body
+
+========
+JSON 
+========
+
+=> Java Script Object Notation
+
+=> It represents data in key-value format
+
+=> JSON is intereoperable (platform & language independent)
+
+=> JSON is human readable and machine readable
+
+=> JSON is light weight
+
+------
+syntax
+------
+
+{
+	
+   "id" : 101,
+   "name" : "Ashok",
+   "gender" : "Male",
+   "phno" : 1234
+}
+
+==========================
+Working with JSON in Java 
+==========================
+
+=> We don't have direct support in JDK to work with JSON data
+
+=> We need to use third party libraries to work with JSON in java application
+
+		a) Jackson API
+		b) GSON API
+
+==========================
+Working with Jackson API
+==========================
+
+=> Add below dependency in project pom.xml file
+
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.15.2</version>
+</dependency>
+
+=> Create class to represent data
+
+public class User {
+
+	private Integer id;
+	private String name;
+	private String gender;
+	private Long phno;
+
+	//setters & getters
+}
+
+=> Java class to perform conversions
+
+package in.ashokit.main;
+
+import java.io.File;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import in.ashokit.binding.User;
+
+public class App {
+
+	public static void main(String[] args) throws Exception {
+		App app = new App();
+		// app.convertObjToJson();
+		app.convertJsonToObj();
+	}
+
+	public void convertJsonToObj() throws Exception {
+
+		ObjectMapper mapper = new ObjectMapper();
+		User user = mapper.readValue(new File("user.json"), User.class);
+		System.out.println(user);
+	}
+
+	public void convertObjToJson() throws Exception {
+
+		User u = new User(101, "Ashok", "Male", 123456l);
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.writeValue(new File("user.json"), u);
+
+		System.out.println("Java Object converted to Json...!!");
+
+	}
+
+}
+
+==========
+GSON API
+==========
+
+=> GSON API provided by google to work with JSON data
+
+=> Using GSON API we can convert Java obj to json and vice versa
+
+=> In Gson API we have pre-defined clas 'Gson' to conevert obj to json and vice versa.
+
+				Gson gson = new Gson ( );
+				gson.toJson (obj);
+				gson.fromJson(file);
+
+
+===========================
+Developing First REST API
+===========================
+
+Step-1 : Create Spring starter project with below dependencies
+
+		a) web-starter
+		b) devtools
+
+Step-2 : Create RestController class using @RestController annotation
+
+Step-3 : Create required methods and map them to HTTP Protocol Methods
+
+Step-4 : Run the application and test it using postman
+
+
+===================
+HTTP GET Request
+===================
+
+@GetMapping : To map our Rest Controller method to HTTP GET request
+
+	=> GET request is used to get data from provider
+	=> GET Request will not contain request body
+	=> Consumer/client can send data to provider in GET request using URL.
+			(Query Params and Path Params)
+
+	Query Param URL : http://localhost:8080/product?pid=301
+
+	Path Param URL : http://localhost:8080/book/301
+
+
+	=> To read Query Params from URL we will use @RequestParam annotation
+
+	=> To read Path Params from URL we will use @PathVariable annotation
+
+
+=========================
+What is ResponseEntity ?
+========================
+
+=> It is a pre-defined class which is used to create Response with response body and response status code.
+
+		ResponseEntity(respBody + Resp Code)
+
+
+@RestController
+public class BookRestController {
+
+	@GetMapping("/book/{id}")
+	public ResponseEntity<Book> getBook(@PathVariable("id") Integer id){
+		Book b = new Book(id, "Java", 2500.00);
+		return new ResponseEntity<>(b, HttpStatus.OK);
+	}
+	
+
+	@GetMapping("/books")
+	public ResponseEntity<List<Book>> getBooks() {
+
+		Book b1 = new Book(501, "Java", 2500.00);
+		Book b2 = new Book(502, "Python", 2500.00);
+		Book b3 = new Book(503, "DevOps", 2500.00);
+
+		List<Book> books = Arrays.asList(b1, b2, b3);
+
+		return new ResponseEntity<>(books, HttpStatus.OK);
+	}
+}
+
+==================
+HTTP POST Request
+==================
+
+=> POST request is used to create resource/record at provider
+
+=> Consumer can send data to provider using POST Request
+
+=> POST request contains request body
+
+=> To read data from Request Body we will use @RequestBody annotation
+
+
+{
+    "id": 301,
+    "name": "Java",
+    "price": 2500.0
+}
+
+@PostMapping("/book")
+public ResponseEntity<String> saveBook(@RequestBody Book book){
+	
+	System.out.println(book);
+	
+	// TODO : save to db
+	
+	return new ResponseEntity<>("Book Save", HttpStatus.CREATED);
+}
+
+
+=================
+HTTP Put Request
+=================
+
+=> PUT request is used to update resource/record at provider
+
+=> PUT Request contains request body
+
+=> To map rest controll method to put request we will use @PutMapping
+
+
+@PutMapping("/book/{id}")
+public ResponseEntity<Book> updateBook(@PathVariable("id") Integer id, 
+		@RequestBody Book book){
+	System.out.println(book);
+	
+	// TODO : Update book in db
+	
+	return new ResponseEntity<>(book, HttpStatus.OK);
+}
+
+====================
+HTTP Delete Request	
+====================
+
+=> DELETE request is used to delete record at provider
+
+=> DELETE request contains request body
+
+=> @DeleteMapping annotation is used to map our method to Delete request
+
+
+@DeleteMapping("/book/{id}")
+public ResponseEntity<String> deleteBook(@PathVariable("id") Integer id){
+	System.out.println("Id To delete record:: "+ id);
+	
+	// TODO: DELETE Book in DB
+	
+	return new ResponseEntity<>("Record Deleted", HttpStatus.OK);
+}
+
+===================================
+What are media types in REST API ?
+===================================
+
+=> Media Types are used to represent input & output data formats
+
+	consumes : It represents input data format accepted by provider
+
+	produces : It represents output data format supported by provider
+
+
+@PutMapping(value="/book/{id}", consumes="application/json", produces="application/json")
+public ResponseEntity<Book> updateBook(@PathVariable("id") Integer id, 
+		@RequestBody Book book){
+	
+	System.out.println(book);
+	
+	// TODO : Update book in db
+	
+	return new ResponseEntity<>(book, HttpStatus.OK);
+}		
+
+@PostMapping(value="/book", consumes="application/json", produces="text/plain")
+public ResponseEntity<String> saveBook(@RequestBody Book book){
+	
+	System.out.println(book);
+	
+	// TODO : save to db
+	
+	return new ResponseEntity<>("Book Save", HttpStatus.CREATED);//201
+}
+
+@GetMapping(value="/books", produces="application/json")
+public ResponseEntity<List<Book>> getBooks() {
+
+	Book b1 = new Book(501, "Java", 2500.00);
+	Book b2 = new Book(502, "Python", 2500.00);
+	Book b3 = new Book(503, "DevOps", 2500.00);
+
+	List<Book> books = Arrays.asList(b1, b2, b3);
+
+	return new ResponseEntity<>(books, HttpStatus.OK);//200
+}
+
+
+GET : GET data from provider
+
+POST : Send data to provider to create a record
+
+PUT : Update a record
+
+DELETE : Delete a  record
+
+
+consumes : It represents in which format provider can access input
+
+	Ex: consumes = "application/json"
+
+produces : It represents in which format provider can send output
+
+==================
+REST API Project 
+=================
+
+Provider : IRCTC - API
+
+			a) POST    book-ticket
+			b) GET 	   ticket/{tikcet-num}
+
+			Input : Passenger - Info
+
+			Output : Ticket - Info
+
+
+================
+Request Data
+================
+
+{
+	"name":"ashok",
+	"phno" : 1234567,
+	"gender" : "Male",
+	"from" : "Hyd",
+	"to" : "Banglore",
+	"doj" : "2023-01-01",
+	"trainNum" : 12345
+}
+
+
+================
+Response Data
+================
+
+{
+    "ticketNum": 1,
+    "name": "ashok",
+    "phno": "1234567",
+    "gender": "Male",
+    "from": "Hyd",
+    "to": "Banglore",
+    "price": 1500.0,
+    "doj": "2023-01-01",
+    "ticketStatus": "CONFIRMED",
+    "trainNum": 12345
+}
+
+
+Provdider URL : http://132.45.6.78:8080/
+
+OPERATIONS :
+
+POST : /ticket
+GET : /ticket/{ticket-num}
+GET : /tickets
+
+=============================================
+Adding Swagger Documentation to provider API
+=============================================
+
+=> Add below dependency in pom.xml file
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+
+=> Run the application and access swagger documentation page
+
+		URL : http://localhost:8080/swagger-ui/index.html
+
+Note: Using Swagger DOC UI page we can test our API functionality also.
+
+=> We can get API documentation in JSON format using below URL
+
+		URL : http://localhost:8080/v3/api-docs
+
+
+=> Provider can give the API documentation to consumer in 2 ways
+
+			a) Swagger Documentation
+			b) PDF Document
+
+Note: Provider will send documentation to consumer in email.			
+
+
+=======================================
+Provider API Deployment in AWS Cloud
+=======================================
+
+Video Reference : https://www.youtube.com/watch?v=cRQPgbwOWq0
+
+
+Step-1) Create Account in AWS Cloud
+
+Step-2) Launch Linux Virtual Machine using EC2
+
+		AMI : Amazon Linux
+
+Step-3) Connect with Linux VM using MobaXterm
+
+Step-4) Install Java software
+
+		$ java -version
+		$ sudo yum install java
+		$ java -version
+
+Step-5) Upload jar file into Linux VM
+
+Step-6) Run Jar file
+
+		$ java -jar <jar-file>
+
+Step-7) Enable 8080 port number in EC2 security group Inbound rules
+
+Step-8) Test our API using Swagger Doc
+
+		URL : http://public-ip:8080/swagger-ui/index.html
+
+
+
+==========
+Consumer
+==========
+
+=> Access services from other applications
+
+=> To develop consumer we need provider info
+
+			a) Provider App URL
+			b) What Operations(methods) Available
+			c) Input Data Format
+			d) Output Data Format
+
+Note: If we have above info from the provider then only we can develop Consumer application.
+
+=> Provider can give the above information to consumer in 2 ways
+
+			a) Swagger Documentation
+			b) PDF Document
+
+###  Provider Doc : http://35.154.35.88:8080/swagger-ui/index.html
+
+=> In spring boot, we can develop consumer in 3 ways
+
+	a) RestTemplate
+	b) WebClient
+	c) FeignClient
+
+
+======================================
+MakeMyTrip App (Consumer) Development
+======================================
+
+Step-1) Read Provider Documentation & analyze the requirement
+
+Step-2) Create Spring Boot Starter Project with dependencies
+
+		a) web-starter
+		b) thymeleaf
+		c) devtools
+
+Step-3) Create Request & Response binding classes
+
+Step-4) Create Service interface & impl class with Integration Logic
+
+Step-5) Create Controller to handle requests
+
+Step-6) Develop presentation files
+
+
+
+========================
+What is RestTemplate ?
+=======================
+
+=> RestTemplate is a predefined class in spring web mvc
+
+=> Using RestTemplate we can send HTTP requests
+
+=> we can develop consumer side logic using Rest Template
+
+=> RestTemplate supports only synchronus communication
+
+
+====================
+What is WebClient ?
+====================
+
+=> Introduced in spring 5.x version
+
+=> Predefined interface available in spring-webflux
+
+=> Using WebClient we can develop Consumer logic
+
+=> Using WebClient we can send HTTP Requests
+
+=> It supports both sync & async communication
+
+
+Note: To use WebClient in our project, we need to add 'spring-reactive-web' dependency.
+
+
+
+===================================
+What is Synchronus communication ?
+===================================
+
+=> Synchronus means after sending request it will block our thread/program execution until we recieve response.
+
+===================================
+What is Asynchronus communication ?
+===================================
+
+=> Asynchronus means after sending request it will not block our thread/program execution. It will continue the execution.
+
+=========================================
+How to send HTTP Request using WebClient
+=========================================
+
+----------------
+POST Request
+----------------
+
+		WebClient client = WebClient.create ( );
+
+				client.post ( )
+					  .uri(apiUrl)
+					  .body(BodyInserters.value(obj))
+					  .retrieve( )
+					  .bodyToMono(Class);
+
+----------------
+GET Request
+---------------
+
+				client.get ( )
+					  .uri(apiUrl, Object... vars)
+					  .retrieve()
+					  .bodyToMono(Class);
+
+
+
+*Topics Covered So far in REST API*
+
+=> What is Distributed Application
+=> What is Intereoperability
+=> Why we need to go for Distributed apps
+=> Distributed Technologies
+=> What is REST API ?
+=> REST Architecture
+=> What is Provider 
+=> What is Consumer
+=> HTTP Protocol
+=> HTTP Methods
+=> HTTP Request Format
+=> HTTP Response Format
+=> HTTP Status Codes
+=> JSON Format
+=> Jackson & GSON Apis
+
+
+=> REST API Architcture
+=> REST API Development
+=> POSTMAN
+=> GET Request
+=> POST Request
+=> PUT Request
+=> DELETE Request
+=> ResponseEntity
+=> Request Params & @RequestParam
+=> Path Param & @PathVariable
+=> @RequestBody
+=> Swagger Documentation
+=> Provider Development (IRCTC)
+=> REST API Deployment in AWS
+=> Consumer Development (MakeMyTrip)
+=> RestTemplate
+=> WebClient
+=> Sync vs Async
+
+
+🔥 *Assignment : Develop a REST API with below 2 end points* 🔥
+
+1) POST : /product
+
+2) GET : /products
+
+Note: REST API should support for both XML & JSON for input and ouput.
+
+
+======
+XML
+======
+
+-> XML stands for Extensible Markup Language
+
+-> XML governed by w3c org
+
+-> XML is free & open source
+
+-> XML is intereoperable (platform & language - independent)
+
+-> XML is used to represent data & transfer data
+
+-> XML represents data in the form of elements
+
+	ex:  <id>10</id>
+		 <name>ashokit</name>
+
+-> Every XML element represents one start tag and one end tag.
+
+-> In XML we can see two types of elements
+
+		1) Simple Element
+		2) Compound Element
+
+-> Simple Element represents data directley
+
+		Ex:  <company>TCS</company>
+			 <location>Hyderabad</location>
+
+-> Compound Element represents child elements
+
+		<person>
+			<id>101</id>
+			<name>ashok</name>
+		</person>
+
+==========
+JAX-B API
+==========
+
+-> Java Architecture for XML Binding
+
+-> It is used to work with xml data in java applications
+
+Marshalling : Converting java object to xml data
+
+Un-Marshalling : Converting xml data to java object
+
+-> Using JAX-B api we can perform Marshalling & Un-Marshalling
+
+-> JAX-B api was part of JDK upto 1.8v (They removed jax-b api from jdk 9)
+
+Note: To use JAX-B api we need to add it as dependency.
+
+
+====================================
+Working with XML data in REST API
+====================================
+
+-> Add below dependency in pom.xml file
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+		</dependency>
+
+
+consumes : It represents input data format of provider (request body data)
+
+	consumes = { "application/xml", "application/json" }
+
+produces : It represents output data format of provider (response body data)
+
+	produces = { "application/xml", "application/json" }
+
+Accept : It represents in which format consumer expecting response from provider
+
+	Ex: Accept = application/xml
+		Accept = application/json
+
+Content-Type : It represents in which format consumer sending data to provider
+
+	Ex: Content-Type = application/xml
+		Content-Type = application/json
+
+
+
+==========================================
+REST Controller with XML and JSON data	
+==========================================
+
+package in.ashokit.rest;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import in.ashokit.binding.Book;
+
+@RestController
+public class BookRestController {
+
+	
+	@GetMapping(
+			value="/book/{id}",
+			produces = {
+					"application/xml",
+					"application/json"
+			}
+	)
+	public ResponseEntity<Book> getBook(@PathVariable("id") Integer id){
+		
+		Book b = new Book(id, "Java", 2500.00);
+		
+		return new ResponseEntity<>(b, HttpStatus.OK);
+	}
+	
+
+	@GetMapping(
+			value="/books",
+			produces = {
+					"application/xml",
+					"application/json"
+			}
+	)
+	public ResponseEntity<List<Book>> getBooks() {
+
+		Book b1 = new Book(501, "Java", 2500.00);
+		Book b2 = new Book(502, "Python", 2500.00);
+		Book b3 = new Book(503, "DevOps", 2500.00);
+
+		List<Book> books = Arrays.asList(b1, b2, b3);
+
+		return new ResponseEntity<>(books, HttpStatus.OK);//200
+	}
+	
+	@PostMapping(
+			value="/book",
+			consumes = {
+					"application/xml",
+					"application/json"
+			},
+			produces = {
+					"text/plain"
+			}
+	)
+	public ResponseEntity<String> saveBook(@RequestBody Book book){
+		
+		System.out.println(book);
+		
+		// TODO : save to db
+		
+		return new ResponseEntity<>("Book Save", HttpStatus.CREATED);//201
+	}
+	
+	@PutMapping(value="/book/{id}")
+	public ResponseEntity<Book> updateBook(@PathVariable("id") Integer id, 
+			@RequestBody Book book){
+		
+		System.out.println(book);
+		
+		// TODO : Update book in db
+		
+		return new ResponseEntity<>(book, HttpStatus.OK);
+	}
+	
+	@DeleteMapping(value="/book/{id}")
+	public ResponseEntity<String> deleteBook(@PathVariable("id") Integer id){
+		
+		System.out.println("Id To delete record:: "+ id);
+		
+		// TODO: DELETE Book in DB
+		
+		return new ResponseEntity<>("Record Deleted", HttpStatus.OK);
+	}
+}
+
+	
+==========================================================================
+Why we are using Objects as parameters & return types in Rest Controller methods ?
+==========================================================================
+
+=> To make our REST API methods loosely coupled we are using Objects
+
+=> If we use xml or json data directley then our rest api methods will be tightly coupled.
+
+=> Spring Boot will use Message Converters to convert object data into xml or json and vice versa.
+
+=================
+Spring Data REST
+=================
+
+-> It is used to simplify REST API development.
+
+-> Without creating rest-controller classes we can make rest api ready to handle http requests using data rest concept.
+
+-> It will use jpa entities & repositories to expose as REST API methods.
+
+-> To work with "spring data rest" we need to add below dependency in pom.xml
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+
+-> To expose JPA repository as REST API we will configure below annotation
+
+
+@RepositoryRestResource(path="books")
+public interface BookRepository extends JpaRepository<Book, Integer>{
+
+}
+
+Assignment : Disable PUT and DELETE methods in Spring Data REST Application.
+
+
+===============================
+Exception Handling in REST API
+==============================
+
+1) Local Exception Handling : Specific to particular controller class
+
+2) Global Exception Handling : Through out application
+
+----------------------------------------------------------------------------
+public class ProductNotFoundException extends RuntimeException{
+	
+	public ProductNotFoundException() {
+		
+	}
+	
+	public ProductNotFoundException(String msg) {
+		super(msg);
+	}
+
+}
+----------------------------------------------------------------------------
+@RestController
+public class ProductRestController {
+	
+	@GetMapping("/product/{pid}")
+	public String getProductInfo(@PathVariable Integer pid) {
+		
+		if( pid > 100) {
+			throw new ProductNotFoundException("Invalid Product ID");
+		}
+		
+		return "Keyboard - 2500 INR";
+	}
+}
+-------------------------------------------------------------------------------
+@RestControllerAdvice
+public class AppExceptionHandler {
+
+	@ExceptionHandler(value = Exception.class)
+	public ResponseEntity<ExInfo> handleEx(Exception e) {
+
+		ExInfo info = new ExInfo("EX001", e.getMessage(), LocalDate.now());
+
+		return new ResponseEntity<>(info, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(value = ProductNotFoundException.class)
+	public ResponseEntity<ExInfo> handleProductNFEx(ProductNotFoundException e) {
+
+		ExInfo info = new ExInfo("EX002", e.getMessage(), LocalDate.now());
+
+		return new ResponseEntity<>(info, HttpStatus.BAD_REQUEST);
+	}
+}
+---------------------------------------------------------------------------------

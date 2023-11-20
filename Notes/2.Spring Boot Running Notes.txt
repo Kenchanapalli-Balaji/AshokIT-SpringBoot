@@ -1,0 +1,225 @@
+======================
+What is Spring Boot ?
+======================
+
+=> Spring Boot is extension for Spring Framework.
+
+=> Spring Boot is one approach to develop spring based applications.
+
+Note: SpringBoot is internally using Spring.
+
+=> What type of apps we can develop using Spring same type of apps can be developed using Spring Boot.
+
+=> Spring Boot is used for rapid application development.
+ 
+		Spring Framework ==> Manual Configurations
+
+		Spring Boot ==> Auto Configurations
+
+
+========================
+Spring Boot Advantages
+========================
+
+1) Pom Starters (dependencies simplified)
+
+	Ex: web-starter, data-jpa-starter, security-starter, mail-starter
+
+2) AutoConfiguration
+
+	Ex: creating connection pool, deploy web app to tomcat server
+
+3) Embedded Servers
+
+	Ex: Tomcat, Jetty and Netty
+
+4) Actuators (Monitor and manage our app)
+
+	Ex: health, threads-info, heap-info, config-props, url-mappings, beans...
+
+	
+=============================
+What is Auto Configuration ?
+=============================
+
+=> It is the process of identifying configurations required for the application and provide those configurations in runtime of application.
+
+=> Spring Boot will provide Auto configuration based on dependencies added in project.
+
+	
+	web-starter : start tomcat server + deploy app in tomcat server
+
+	security-starter : It will secure our application with login page
+
+	jpa-starter : It will create database connection pool
+
+
+======================
+Banner in Spring Boot
+======================
+
+
+spring.main.banner-mode=OFF
+
+
+OFF : Don't print banner 
+
+Console : Print banner on console  (it is default)
+
+LOG : Print banner in log file
+
+=> We can customize banner content by creating banner.txt file under src/main/resources folder
+
+
+=======================
+Runners in Spring Boot 
+=======================
+
+
+=> Execute any logic only once when our boot application got started.
+
+
+	1) ApplicationRunner -> run ( )
+
+	2) CommandLineRunner -> run ( )
+
+
+
+@Component
+public class MyAppRunner implements ApplicationRunner {
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        System.out.println("AppRunner - run () method executed");
+    }
+}
+
+
+@Component
+public class MyCmdRunner implements CommandLineRunner {
+
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("CmdRunner - run () method executed");
+    }
+}
+
+
+Usecase-1: We can use runners to load static data from db to our application
+
+Usecase-2: Cleanup staging tables in database
+
+Usecase-3 : Send email notification once application got started
+
+
+
+============================
+Spring Boot start class
+===========================
+
+=> Entrypoint for springboot application execution
+
+@SpringBootApplication
+public class BooksAppApplication {
+
+	public static void main(String[] args) {
+
+		SpringApplication.run(BooksAppApplication.class, args);
+
+	}
+}
+
+
+=> This @SpringBootApplication is equal to below 3 annotations
+
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan
+
+=========================================
+What is run ( ) method in Spring Boot ?
+=========================================
+
+=> Start StopWatch
+
+=> prepare env
+
+=> create IoC object
+
+=> prepare IoC context
+
+=> Print Banner
+
+=> End StopWatch and Print app startup time
+
+=> Call Runners
+
+=> Return IOC object
+
+
+
+==================================================================
+Q) Which class is used by run ( ) method to start / create IOC ?
+==================================================================
+
+=> Starting IOC container depends on pom starter in project
+
+=> Based on POM starter boot will choose the class to start IOC container
+
+
+spring-boot-starter : AnnotationConfigApplicationContext
+
+spring-boot-starter-web :  AnnotationConfigServletWebServerApplicationContext
+
+spring-boot-starter-webflux : AnnotationConfigReactiveWebServerApplicationContext
+
+
+=> All the above 3 classes are pre-defined classes and they are impl classes for ConfigurableApplicationContext interface
+
+=> run ( ) will return ioc object
+
+
+
+
+============
+Summary
+==========
+
+1) What is Spring Boot
+2) Spring Boot Advantages
+		- Pom Starters
+		- Version Conflicts Resolution
+		- Auto Configuration
+		- Embedded Servers (Tomcat, Jetty and Netty)
+3) SpringBoot App Creation (start.spring.io)
+4) Project Folder Structure
+5) Spring Boot Start Class
+6) @SpringBootApplication
+7) What is Component Scanning (@ComponentScan)
+8) What is Base Package Naming Convention
+9) Internals of SpringApplication.run ( ) method
+10) Spring Boot banner & Banner Customization & Modes
+11) Runners in Spring Boot
+12) IOC Container
+13) Dependency Injection
+14) SI, CI and FI
+15) Spring Annotations
+	- @Component
+	- @Service
+	- @Repository
+	- @Configuration
+	- @Bean
+16) Auto Wiring (@Autowired, @Qualifier & @Primary)
+17) Bean Scopes (@Scope)
+18) Bean Life Cycle Methods (IntialingBean & DisposableBean)
+19) @Value annotation
+20) Simple Project Implemented (Read file data and insert into DB)
+
+
+
+
+
+
+
+
+

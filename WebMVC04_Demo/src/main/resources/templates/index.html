@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebMVC Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-5">
+        <h3>User Form</h3>
+        <p th:text="${msg}"></p>
+        <form th:action="@{user}" th:object="${user}" method="POST">
+        <table>
+            <tr>
+                <td>Name:</td>
+                <td><input type="text" th:field="*{name}" required></input></td>
+            </tr>
+            <tr>
+                <td>Mail:</td>
+                <td><input type="text" th:field="*{mail}" required></input></td>
+            </tr>
+            <tr>
+                <td>phno:</td>
+                <td><input type="text" th:field="*{phno}" required></input></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="submit" class="btn btn-primary"></td>
+            </tr>
+        </table>
+        </form>
+        </br>
+        <a href="users" class="btn btn-primary">View Users</a>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    </div>
+
+</body>
+</html>
