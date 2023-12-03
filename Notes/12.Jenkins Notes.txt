@@ -1,0 +1,100 @@
+
+
+============================
+Build & Deployment Process
+============================
+
+1) Take latest code from source code repo (git / bitbucket)
+
+2) Compile source code
+
+3) Execute Junit test cases
+
+4) Package our application as jar or war file
+
+5) Create Docker Image for the application
+
+6) Create Docker Container for the application
+
+============================================
+Challenges with Manual Build & Deployment
+============================================
+
+1) Repeated tasks
+
+2) Time taking process
+
+3) Human Errors
+
+
+### To avoid above problems, we need to automate project build & deployment process.
+
+================
+Jenkins Server
+================
+
+=> It is free & open source server
+
+=> It is used to automate build and deployment process
+
+=> We can achive CI CD using Jenkins.
+
+CI CD : Continuous Integration & Continuous Deployment.
+
+=> Jenkins s/w developed using Java Language.
+
+Note: Using Jenkins we can automate CI CD process in the project.
+
+
+
+==================================
+Jenkins With Docker Integration
+==================================
+
+1) Setup Linux VM (Amazon Linux AMI)
+
+2) Install Git Client 
+
+	$ sudo yum install git -y
+
+3) Install Maven 
+
+	$ sudo yum install maven -y
+
+4) Install Jenkins 
+
+	URL : https://www.jenkins.io/
+	
+5) Enable Jenkins port number (8080) in security group 
+
+6) Access Jenkins Dashboard 
+	
+================================
+Install Docker in Jenkins Server
+================================
+
+# Install Docker
+$ sudo yum update -y
+$ sudo yum install docker -y
+$ sudo service docker start
+
+# Add jenkins user to docker group
+$ sudo usermod -aG docker jenkins
+$ sudo systemctl restart jenkins
+
+
+
+===============================================
+Create Jenkins Job To Create Docker Container
+================================================
+
+Spring Boot App Git Hub Repo: https://github.com/ashokitschool/spring-boot-docker-app.git
+
+
+
+==================
+Docker Commands
+==================
+docker build -t <img-name> .
+
+docker run -d -p 9090:8080 <img-name>
